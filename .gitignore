@@ -1,0 +1,6 @@
+.idea
+tests/config.*
+discordlists.py.egg-info/
+discordlists/__pycache__/
+build/
+dist/
