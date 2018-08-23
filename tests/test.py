@@ -30,5 +30,11 @@ async def on_message(message):
         result = json.dumps(result)[:2000]
         await bot_client.send_message(message.channel, result)
 
+    # GET Test: Get information from all lists
+    if message.content.startswith('!get'):
+        result = await api_client.get_bot_info(bot_client.user.id)
+        await bot_client.send_message(message.channel, result[0])
+        await bot_client.send_message(message.channel, json.dumps(result[1])[:2000])
+
 
 bot_client.run(config[0])

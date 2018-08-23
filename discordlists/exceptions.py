@@ -42,3 +42,8 @@ class Ratelimited(DiscordListsException):
 class EmptyResponse(DiscordListsException):
     def __init__(self):
         super().__init__("No response was received from the API")
+
+
+class NotFound(DiscordListsException):
+    def __init__(self):
+        super().__init__("The requested entity was not found")

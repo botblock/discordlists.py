@@ -14,24 +14,43 @@ Install via pip (recommended)
 * POST server count
 * AUTOMATIC server count updating
 * ALL bot lists' APIs included
-* GET bot information from all bot lists
+* GET bot information from all bot lists and Discord
 
 ## Example Discord.py Rewrite cog
 
 
 ```Python
-    import discordlists
+import discordlists
+
+from discord.ext import commands
+from discord.ext.commands import Context
 
 
-    class Stats:
-        def __init__(self, bot):
-            self.bot = bot
-            self.api = discordlists.Client(self.bot)  # Create a Client instance
-            self.api.set_auth("botsfordiscord.com", "cfd28b742fd7ddfab1a211934c88f3d483431e639f6564193") # Set authorisation token for a bot list
-            self.api.start_loop()  # Posts the server count automatically every 30 minutes
+class DiscordLists:
+    def __init__(self, bot):
+        self.bot = bot
+        self.api = discordlists.Client(self.bot)  # Create a Client instance
+        self.api.set_auth("botsfordiscord.com", "cfd28b742fd7ddfab1a211934c88f3d483431e639f6564193") # Set authorisation token for a bot list
+        self.api.start_loop()  # Posts the server count automatically every 30 minutes
 
-    def setup(bot):
-        bot.add_cog(Stats(bot))
+    @commands.command()
+    async def get_bot(self, ctx: Context, bot_id: int):
+        """
+        Gets a bot using discordlists.py
+        """
+        try:
+            result = await self.api.get_bot_info(bot_id)
+        except:
+            await ctx.send("Request failed")
+            return
+        
+        await ctx.send("Bot: {}#{} ({})\nOwners: {}\nServer Count: {:,}".format(
+            result['username'], result['discriminator'], result['id'], 
+            ", ".join(result['owners']), result['server_count']
+        ))
+
+def setup(bot):
+    bot.add_cog(DiscordLists(bot))
 ```
 
 ## Discussion, Support and Issues

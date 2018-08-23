@@ -98,7 +98,7 @@ class BaseClient:
 
     async def __post(self, endpoint: str, content: Union[list, dict]) -> dict:
         """
-        Post data to an API endpoint
+        POST data to an API endpoint
 
         Parameter
         ========
@@ -108,14 +108,40 @@ class BaseClient:
 
         content: Union[list, dict]
             The data to be posted to the endpoint
+
+        Returns
+        =======
+
+        json: dict
+            The formatted response from the API endpoint
         """
         self.__session_init()
         async with self.session.post(url=self.base + endpoint, json=content, headers=self.__headers()) as resp:
             return await self.__handle_response(resp)
 
+    async def __get(self, endpoint: str) -> dict:
+        """
+        GET data from an API endpoint
+
+        Parameter
+        ========
+
+        endpoint: str
+            The endpoint to access on the API
+
+        Returns
+        =======
+
+        json: dict
+            The formatted response from the API endpoint
+        """
+        self.__session_init()
+        async with self.session.get(url=self.base + endpoint, headers=self.__headers()) as resp:
+            return await self.__handle_response(resp)
+
     def set_auth(self, list_id: str, auth_token: str):
         """
-        Sets an authorisation token for the given list id from botblock.org
+        Sets an authorisation token for the given list ID from botblock.org
 
         Parameter
         ========
@@ -130,7 +156,7 @@ class BaseClient:
 
     def remove_auth(self, list_id: str):
         """
-        Removes an authorisation token for the given list id from botblock.org
+        Removes an authorisation token for the given list ID from botblock.org
 
         Parameter
         ========
@@ -149,7 +175,7 @@ class BaseClient:
         ========
 
         bot_id: int
-            The id of the bot you want to update server/guild count for
+            The ID of the bot you want to update server/guild count for
 
         guild_count: int
             The server/guild count for the bot
@@ -167,13 +193,13 @@ class BaseClient:
 
     async def post_guild_count(self, bot_id: int, guild_count: int) -> dict:
         """
-        Post a server/guild count for a bot
+        POST a server/guild count for a bot
 
         Parameter
         ========
 
         bot_id: int
-            The id of the bot you want to update server/guild count for
+            The ID of the bot you want to update server/guild count for
 
         guild_count: int
             The server/guild count for the bot
@@ -186,4 +212,20 @@ class BaseClient:
         """
         return await self.__post("count", self.__guild_count_body(bot_id, guild_count))
 
-    ## TODO: get bot information
+    async def get_bot_information(self, bot_id: int) -> dict:
+        """
+        GET information about a bot
+
+        Parameter
+        ========
+
+        bot_id: int
+            The ID of the bot you want to fetch from the API
+
+        Returns
+        =======
+
+        json: dict
+            The response from the API endpoint
+        """
+        return await self.__get("bots/{}".format(bot_id))

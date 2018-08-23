@@ -22,8 +22,12 @@
 """
 
 import asyncio
+from typing import Tuple, Union
+
+from discord import User
 
 from .baseclient import BaseClient
+from .exceptions import NotFound
 
 
 class Client:
@@ -36,7 +40,7 @@ class Client:
     bot :
         An instance of a discord.py Bot or Client object
     interval : int[Optional]
-        Seconds between each automatic posting of server/guild count. Defaults to 30 minutes
+        Seconds between each automatic posting of server/guild count. Defaults to 1800 seconds (30 minutes)
     """
 
     def __init__(self, bot, interval: int = 30 * 60):
@@ -77,7 +81,7 @@ class Client:
 
     def set_auth(self, list_id: str, auth_token: str):
         """
-        Sets an authorisation token for the given list id from botblock.org
+        Sets an authorisation token for the given list ID from botblock.org
 
         Parameter
         ========
@@ -92,7 +96,7 @@ class Client:
 
     def remove_auth(self, list_id: str):
         """
-        Removes an authorisation token for the given list id from botblock.org
+        Removes an authorisation token for the given list ID from botblock.org
 
         Parameter
         ========
@@ -104,7 +108,7 @@ class Client:
 
     async def post_count(self) -> dict:
         """
-        Post current server/guild count based on bot data
+        POST current server/guild count based on bot data
 
         Returns
         =======
@@ -118,9 +122,9 @@ class Client:
         """
         Start a loop that automatically updates the server/guild count for the bot
         """
-        self.bot.loop.create_task(self._loop(self.interval))
+        self.bot.loop.create_task(self.__loop(self.interval))
 
-    async def _loop(self, interval):
+    async def __loop(self, interval: float):
         """
         The internal loop used for automatically posting server/guild count stats
         """
@@ -129,4 +133,42 @@ class Client:
             await self.post_count()
             await asyncio.sleep(interval)
 
-    ## TODO: get bot information
+    async def get_bot_info(self, bot_id: int) -> Tuple[Union[User, None], dict]:
+        """
+        GET information about a bot
+
+        Parameter
+        ========
+
+        bot_id: int
+            The ID of the bot you want to fetch from the API
+
+        Returns
+        =======
+
+        user: Union[User, None]
+            The User object from discord.py if found or None
+
+        json: dict
+            The response from the API endpoint
+        """
+        # Attempt to fetch from Discord
+        try:
+            user_info = await self.bot.get_user_info(str(bot_id))
+        except:
+            user_info = None
+
+        # Get from API
+        api_result = await self.base.get_bot_information(bot_id)
+
+        # Inject Discord data
+        if user_info and api_result:
+            api_result['username'] = user_info.name
+            api_result['discriminator'] = str(user_info.discriminator)
+
+        # Failed
+        if not user_info and not api_result['username']:
+            raise NotFound()
+
+        # Return
+        return (user_info, api_result)
