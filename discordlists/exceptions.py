@@ -34,9 +34,9 @@ class RequestFailure(DiscordListsException):
 
 class Ratelimited(DiscordListsException):
     def __init__(self, json=None):
-        super().__init__("The request to the API endpoint was ratelimited."
-                         "\nMore data may be available in the 'ratelimit' attribute.")
-        self.ratelimit = json
+        super().__init__("The request to the API endpoint was ratelimited." +
+                         ("\nPlease re-attempt this request after {:,} seconds.".format(json['retry_after'])
+                          if json and "retry_after" in json else ""))
 
 
 class EmptyResponse(DiscordListsException):

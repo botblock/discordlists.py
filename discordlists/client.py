@@ -155,6 +155,8 @@ class Client:
         # Attempt to fetch from Discord
         try:
             user_info = await self.bot.get_user_info(str(bot_id))
+        except AttributeError:
+            user_info = await self.bot.fetch_user(bot_id)
         except:
             user_info = None
 
