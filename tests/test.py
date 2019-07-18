@@ -1,40 +1,19 @@
-import json
-
-import discord
-
-import discordlists
+from discord.ext import commands
 
 with open('config.txt') as f:
     config = [g.strip('\r\n ') for g in f.readlines()]
 
-bot_client = discord.Client()
-api_client = discordlists.Client(bot_client)
-
-# POST Test: Setup BFD API auth token
-api_client.set_auth("botsfordiscord.com", config[1])
+bot = commands.Bot('!')
 
 
-@bot_client.event
+@bot.event
 async def on_ready():
     print('Logged in as')
-    print(bot_client.user.name)
-    print(bot_client.user.id)
+    print(bot.user.name)
+    print(bot.user.id)
     print('------')
 
 
-@bot_client.event
-async def on_message(message):
-    # POST Test: Send guild count through client using d.py bot instance and return result
-    if message.content.startswith('!post'):
-        result = await api_client.post_count()
-        result = json.dumps(result)[:2000]
-        await bot_client.send_message(message.channel, result)
-
-    # GET Test: Get information from all lists
-    if message.content.startswith('!get'):
-        result = await api_client.get_bot_info(bot_client.user.id)
-        await bot_client.send_message(message.channel, result[0])
-        await bot_client.send_message(message.channel, json.dumps(result[1])[:2000])
-
-
-bot_client.run(config[0])
+bot.load_extension('post')
+bot.load_extension('get')
+bot.run(config[0])
