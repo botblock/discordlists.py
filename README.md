@@ -16,41 +16,82 @@ Install via pip (recommended)
 * ALL bot lists' APIs included
 * GET bot information from all bot lists and Discord
 
-## Example Discord.py Rewrite cog
-
+## Example Discord.py Cog for Posting Server Count
 
 ```Python
+from discord.ext import commands
+
 import discordlists
 
-from discord.ext import commands
-from discord.ext.commands import Context
+with open('config.txt') as f:
+    config = [g.strip('\r\n ') for g in f.readlines()]
 
 
-class DiscordLists:
+class DiscordListsPost(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.api = discordlists.Client(self.bot)  # Create a Client instance
-        self.api.set_auth("botsfordiscord.com", "cfd28b742fd7ddfab1a211934c88f3d483431e639f6564193") # Set authorisation token for a bot list
+        self.api.set_auth(config[1], config[2])  # Set authorisation token for a bot list
         self.api.start_loop()  # Posts the server count automatically every 30 minutes
 
     @commands.command()
-    async def get_bot(self, ctx: Context, bot_id: int):
+    async def post(self, ctx: commands.Context):
         """
-        Gets a bot using discordlists.py
+        Manually posts guild count using discordlists.py (BotBlock)
         """
         try:
-            result = await self.api.get_bot_info(bot_id)
-        except:
-            await ctx.send("Request failed")
+            result = await self.api.post_count()
+        except Exception as e:
+            await ctx.send("Request failed: `{}`".format(e))
             return
-        
-        await ctx.send("Bot: {}#{} ({})\nOwners: {}\nServer Count: {:,}".format(
-            result['username'], result['discriminator'], result['id'], 
-            ", ".join(result['owners']), result['server_count']
-        ))
+
+        await ctx.send("Successfully manually posted server count ({:,}) to {:,} lists."
+                       "\nFailed to post server count to {:,} lists.".format(self.api.server_count,
+                                                                             len(result["success"].keys()),
+                                                                             len(result["failure"].keys())))
+
 
 def setup(bot):
-    bot.add_cog(DiscordLists(bot))
+    bot.add_cog(DiscordListsPost(bot))
+
+```
+
+## Example Discord.py Cog for Getting Bot Info
+
+```Python
+from discord.ext import commands
+
+import discordlists
+
+
+class DiscordListsGet(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.api = discordlists.Client(self.bot)  # Create a Client instance
+
+    @commands.command()
+    async def get(self, ctx: commands.Context, bot_id: int = None):
+        """
+        Gets a bot using discordlists.py (BotBlock)
+        """
+        if bot_id is None:
+            bot_id = self.bot.user.id
+        try:
+            result = (await self.api.get_bot_info(bot_id))[1]
+        except Exception as e:
+            await ctx.send("Request failed: `{}`".format(e))
+            return
+
+        await ctx.send("Bot: {}#{} ({})\nOwners: {}\nServer Count: {}".format(
+            result['username'], result['discriminator'], result['id'],
+            ", ".join(result['owners']) if result['owners'] else "Unknown",
+            "{:,}".format(result['server_count']) if result['server_count'] else "Unknown"
+        ))
+
+
+def setup(bot):
+    bot.add_cog(DiscordListsGet(bot))
+
 ```
 
 ## Discussion, Support and Issues
