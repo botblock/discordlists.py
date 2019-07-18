@@ -2,7 +2,7 @@
  *  discordlists.py: A simple API wrapper for botblock.org providing server count posting to all bot lists and fetching
  *   bot information from all.
  *  <https://github.com/MattIPv4/discordlists.py/>
- *  Copyright (C) 2018 Matt Cowley (MattIPv4) (me@mattcowley.co.uk)
+ *  Copyright (C) 2019 Matt Cowley (MattIPv4) (me@mattcowley.co.uk)
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *   documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -25,7 +25,7 @@ __title__ = 'discordlists.py'
 __author__ = 'MattIPv4'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2018, MattIPv4'
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 name = "discordlists"
 
@@ -37,4 +37,4 @@ from .exceptions import *
 
 VersionInfo = namedtuple('VersionInfo', 'major minor micro releaselevel serial')
 
-version_info = VersionInfo(major=1, minor=0, micro=1, releaselevel='final', serial=0)
+version_info = VersionInfo(major=1, minor=1, micro=0, releaselevel='final', serial=0)

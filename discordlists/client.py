@@ -2,7 +2,7 @@
  *  discordlists.py: A simple API wrapper for botblock.org providing server count posting to all bot lists and fetching
  *   bot information from all.
  *  <https://github.com/MattIPv4/discordlists.py/>
- *  Copyright (C) 2018 Matt Cowley (MattIPv4) (me@mattcowley.co.uk)
+ *  Copyright (C) 2019 Matt Cowley (MattIPv4) (me@mattcowley.co.uk)
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *   documentation files (the "Software"), to deal in the Software without restriction, including without limitation
