@@ -39,22 +39,22 @@ python3 -m pip install discordlists.py
 * ALL bot lists' APIs included
 * GET bot information from all bot lists and Discord
 
-## Example Discord.py Cog for Posting Server Count
+## Example Discord.py Cogs
+
+### Posting Server Count
 
 ```Python
 from discord.ext import commands
 
 import discordlists
 
-with open('config.txt') as f:
-    config = [g.strip('\r\n ') for g in f.readlines()]
-
 
 class DiscordListsPost(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.api = discordlists.Client(self.bot)  # Create a Client instance
-        self.api.set_auth(config[1], config[2])  # Set authorisation token for a bot list
+        self.api.set_auth("bots.ondiscord.xyz", "dsag38_auth_token_fda6gs") # Set authorisation token for a bot list
+        self.api.set_auth("discordbots.group", "qos56a_auth_token_gfd8g6") # Set authorisation token for a bot list
         self.api.start_loop()  # Posts the server count automatically every 30 minutes
 
     @commands.command()
@@ -79,7 +79,7 @@ def setup(bot):
 
 ```
 
-## Example Discord.py Cog for Getting Bot Info
+### Getting Bot Info
 
 ```Python
 from discord.ext import commands
