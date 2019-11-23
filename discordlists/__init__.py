@@ -24,8 +24,8 @@
 __title__ = 'discordlists.py'
 __author__ = 'MattIPv4'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2018, MattIPv4'
-__version__ = '1.1.0'
+__copyright__ = 'Copyright 2019, MattIPv4'
+__version__ = '1.1.1'
 
 name = "discordlists"
 
@@ -37,4 +37,4 @@ from .exceptions import *
 
 VersionInfo = namedtuple('VersionInfo', 'major minor micro releaselevel serial')
 
-version_info = VersionInfo(major=1, minor=1, micro=0, releaselevel='final', serial=0)
+version_info = VersionInfo(major=1, minor=1, micro=1, releaselevel='final', serial=0)
