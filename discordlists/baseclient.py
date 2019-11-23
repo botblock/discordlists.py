@@ -188,7 +188,7 @@ class BaseClient:
         """
         data = self.auth.copy()
         data["server_count"] = guild_count
-        data["bot_id"] = bot_id
+        data["bot_id"] = str(bot_id)
         return data
 
     async def post_guild_count(self, bot_id: int, guild_count: int) -> dict:
