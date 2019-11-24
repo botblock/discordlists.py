@@ -1,3 +1,5 @@
+import json
+
 from discord.ext import commands
 
 import discordlists
@@ -24,6 +26,7 @@ class DiscordListsPost(commands.Cog):
             await ctx.send("Request failed: `{}`".format(e))
             return
 
+        await ctx.send("```json\n{}\n```".format(json.dumps(result)[:1980]))
         await ctx.send("Successfully manually posted server count ({:,}) to {:,} lists."
                        "\nFailed to post server count to {:,} lists.".format(self.api.server_count,
                                                                              len(result["success"].keys()),
